@@ -1,0 +1,149 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendify | Student Attendance System</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="#" onclick="showPage('dashboard');return false">
+        <span class="brand-icon">A</span>
+        <span>Attendify<small>STUDENT PORTAL</small></span>
+      </a>
+
+      <div class="nav-label">MENU</div>
+      <button class="nav-link active" data-page="dashboard" onclick="showPage('dashboard')">▦ <span>Dashboard</span></button>
+      <button class="nav-link" data-page="students" onclick="showPage('students')">♙ <span>Students</span></button>
+      <button class="nav-link" data-page="attendance" onclick="showPage('attendance')">☑ <span>Attendance</span></button>
+      <button class="nav-link" data-page="reports" onclick="showPage('reports')">▤ <span>Reports</span></button>
+
+      <div class="sidebar-bottom">
+        <div class="profile-avatar">SA</div>
+        <div class="profile-text"><b>Administrator</b><small>Attendance Manager</small></div>
+        <span class="online-dot"></span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="breadcrumb">Workspace / <span id="crumb">Dashboard</span></div>
+          <h2 id="page-title">Dashboard Overview</h2>
+        </div>
+        <div class="top-actions">
+          <span class="today-label" id="today-label"></span>
+          <button class="avatar">SA</button>
+        </div>
+      </header>
+
+      <div id="notice" class="notice" hidden></div>
+
+      <section id="dashboard" class="page">
+        <div class="welcome">
+          <div>
+            <span class="eyebrow">YOUR CAMPUS AT A GLANCE</span>
+            <h1>Good day, Administrator! <span>✦</span></h1>
+            <p>Here is what's happening with your students today.</p>
+          </div>
+          <button class="primary" onclick="showPage('attendance')">+ Mark Attendance</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total Students</span><span class="stat-icon purple">♙</span></div>
+            <h2 id="totalStudents">0</h2><p>Registered students</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Present Today</span><span class="stat-icon green">✓</span></div>
+            <h2 id="presentCount">0</h2><p>Marked present</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Absent Today</span><span class="stat-icon red">×</span></div>
+            <h2 id="absentCount">0</h2><p>Marked absent</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Attendance Rate</span><span class="stat-icon blue">↗</span></div>
+            <h2 id="attendanceRate">0%</h2><p>Present + late / all students</p>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div><h3>Today's Attendance</h3><p>Daily student attendance summary</p></div>
+              <span class="live-pill">● LIVE DATA</span>
+            </div>
+            <div class="chart-area">
+              <div class="donut" id="donut"><div><strong id="donut-rate">0%</strong><small>Attendance</small></div></div>
+              <div class="legend">
+                <div><i class="legend-dot present-dot"></i> Present <b id="legend-present">0</b></div>
+                <div><i class="legend-dot absent-dot"></i> Absent <b id="legend-absent">0</b></div>
+                <div><i class="legend-dot late-dot"></i> Late <b id="legend-late">0</b></div>
+                <div><i class="legend-dot unmarked-dot"></i> Unmarked <b id="legend-unmarked">0</b></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel quick-panel">
+            <div class="panel-heading"><div><h3>Quick Actions</h3><p>Manage your classroom</p></div></div>
+            <button class="quick-action" onclick="showPage('students')"><span class="quick-icon purple">＋</span><span><b>Add Student</b><small>Register a new student</small></span><strong>›</strong></button>
+            <button class="quick-action" onclick="showPage('attendance')"><span class="quick-icon green">✓</span><span><b>Mark Attendance</b><small>Record today's attendance</small></span><strong>›</strong></button>
+            <button class="quick-action" onclick="showPage('reports')"><span class="quick-icon blue">▤</span><span><b>View Reports</b><small>Review attendance history</small></span><strong>›</strong></button>
+          </article>
+        </div>
+
+        <article class="panel table-panel">
+          <div class="panel-heading"><div><h3>Recent Students</h3><p>Recently registered students</p></div><button class="text-button" onclick="showPage('students')">View all →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLL NUMBER</th><th>COURSE</th><th>SEMESTER</th></tr></thead><tbody id="recent-students"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="students" class="page" hidden>
+        <div class="section-heading"><div><h2>Student Directory</h2><p>Register and manage your student records.</p></div><button class="primary" onclick="toggleForm()">+ Add Student</button></div>
+        <form id="student-form" class="panel form-grid" hidden>
+          <h3 class="full">Register New Student</h3>
+          <label>Full Name<input name="name" required maxlength="100" placeholder="Enter student name"></label>
+          <label>Roll Number<input name="roll_no" required maxlength="30" placeholder="e.g. 2401530100"></label>
+          <label>Course / Branch<input name="course" required placeholder="e.g. B.Tech CSE"></label>
+          <label>Semester / Year<input name="semester" required placeholder="e.g. 5th Semester"></label>
+          <label class="full">Email Address<input name="email" type="email" placeholder="student@example.com"></label>
+          <div class="form-actions full"><button type="button" class="secondary" onclick="toggleForm(false)">Cancel</button><button class="primary">Save Student</button></div>
+        </form>
+        <article class="panel">
+          <div class="toolbar"><input id="student-search" placeholder="⌕ Search name, roll number or course..."><span id="student-count">0 students</span></div>
+          <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLL NUMBER</th><th>COURSE</th><th>SEMESTER</th><th>EMAIL</th><th>ACTION</th></tr></thead><tbody id="students-body"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="attendance" class="page" hidden>
+        <div class="section-heading"><div><h2>Daily Attendance</h2><p>Mark and update each student's attendance.</p></div></div>
+        <article class="panel">
+          <div class="toolbar attendance-toolbar"><label>Attendance date<input type="date" id="attendance-date"></label><span id="marked-count">0 marked</span></div>
+          <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLL NUMBER</th><th>COURSE</th><th>STATUS</th></tr></thead><tbody id="attendance-body"></tbody></table></div>
+          <div class="save-bar"><span>Changes are saved when you select a status.</span><button class="primary" onclick="loadAttendance()">↻ Refresh</button></div>
+        </article>
+      </section>
+
+      <section id="reports" class="page" hidden>
+        <div class="section-heading"><div><h2>Attendance Reports</h2><p>View a student's attendance history and percentage.</p></div></div>
+        <article class="panel">
+          <div class="toolbar">
+            <label class="report-select">Select student<select id="report-student"><option value="">Choose a student</option></select></label>
+            <button class="primary" onclick="loadReport()">Generate Report</button>
+          </div>
+          <div id="report-result"><div class="empty-state">Select a student to view their report.</div></div>
+        </article>
+      </section>
+
+      <footer>© 2026 Attendify <span>Student Attendance Management System</span></footer>
+    </main>
+  </div>
+</body>
+</html>
